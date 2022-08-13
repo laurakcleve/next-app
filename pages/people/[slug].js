@@ -2,14 +2,16 @@ const People = ({ name }) => <h1>{name}</h1>
 
 export default People
 
-const people = ['jimmy', 'laura', 'woofy']
-
-export function getServerSideProps({ params }) {
+export async function getServerSideProps({ params }) {
   const { slug } = params
-  const name = people[slug] || 'could not find user'
+  const result = await fetch(`https://swapi.dev/api/people/${slug}`).then((res) =>
+    res.json()
+  )
+  console.log(result)
+
+  const person = result.detail ? { name: 'Not found' } : result
+
   return {
-    props: {
-      name,
-    },
+    props: { ...person },
   }
 }
